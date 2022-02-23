@@ -11,16 +11,13 @@
 
 class WordBank {
     public:
-        WordBank() = default;
+        WordBank(const std::string& filename);
 
-        void setData(const std::string& filename);
         const std::vector<std::string>& all();
         std::string random() const; 
         
     private: 
         std::vector<std::string> _words;
 };
-
-extern WordBank words;
 
 #endif

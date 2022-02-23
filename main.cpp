@@ -11,8 +11,6 @@
 #include "lib/WordBank.h"
 #include "lib/Solver.h"
 
-WordBank words = WordBank();
-
 int main(int argc, char** argv){
     if(argc == 1){
         std::cout << "Input file is missing!" << std::endl;
@@ -29,16 +27,16 @@ int main(int argc, char** argv){
 
     srand(time(NULL));
     
-    words.setData(argv[1]);
+    auto words = std::make_shared<WordBank>(argv[1]);
     
     int succesfulGame = 0;
-    auto solver = Solver();
+    auto solver = Solver(words);
 
     for(auto i = 0; i < gameCount; ++i){
-        auto game = Wordle();
+        auto game = Wordle(*words.get());
 
-        if(solver.solve(&game)){
-            succesfulGame++;
+        if(solver.solve(game)){
+            ++succesfulGame;
         }
     }
 

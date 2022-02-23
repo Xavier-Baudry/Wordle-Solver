@@ -6,14 +6,14 @@
 #include "Solver.h"
 #include "Util.h"
 
-bool Solver::solve(Wordle* wordle){
+bool Solver::solve(Wordle& wordle){
     reset();
 
-    while(!wordle->isGameOver()){
+    while(!wordle.isGameOver()){
         auto attempt = nextAttempt();
-        bool isSolved = wordle->isCorrectWord(attempt);
+        bool isSolved = wordle.isCorrectWord(attempt);
 
-        auto hint = wordle->getHint();
+        auto hint = wordle.getHint();
         saveHint(hint, attempt);
 
         #ifdef DEBUG
@@ -44,7 +44,7 @@ const std::string Solver::nextAttempt(){
     std::vector<std::string> potentialMatches;
 
     // Find potential matches using the currently known data (confirmed letters, confirmed positions and invalid letters)
-    for(const auto word : words.all()) {
+    for(const auto word : words->all()) {
         if(wordIsPotentialMatch(std::move(word))){
             potentialMatches.push_back(word);
         }
@@ -55,7 +55,7 @@ const std::string Solver::nextAttempt(){
     }
 
     // If somehow we have no potential match, return a random word
-    return words.random();
+    return words->random();
 }
 
 void Solver::reset() {

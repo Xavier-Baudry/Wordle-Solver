@@ -7,7 +7,7 @@
 #include "WordBank.h"
 #include "Util.h"
 
-void WordBank::setData(const std::string& filename){
+WordBank::WordBank(const std::string& filename){
     #ifdef DEBUG
         std::cout << "Input file:" << filename << std::endl;
     #endif

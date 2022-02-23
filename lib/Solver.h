@@ -3,13 +3,16 @@
 
 #include <unordered_set>
 #include <string>
+
 #include "Wordle.h"
+#include "WordBank.h"
+#include <memory>
 
 class Solver {
     public:
-        Solver() {};
+        Solver(std::shared_ptr<WordBank> w): words(w) {};
 
-        bool solve(Wordle* wordle);
+        bool solve(Wordle& wordle);
 
     private:
         const std::string nextAttempt();
@@ -22,6 +25,7 @@ class Solver {
         std::unordered_set<char> cannotHave;
         std::unordered_set<char> mustHave;
         
+        std::shared_ptr<WordBank> words;
 };
 
 #endif

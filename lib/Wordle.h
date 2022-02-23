@@ -3,13 +3,17 @@
 
 #include <vector>
 #include <string>
+#include <memory>
+
+#include "WordBank.h"
 
 enum hint {INVALID, WRONG_POS, VALID};
 
 class Wordle {
      public:  
-        Wordle();                           // Wordle with random word
-        Wordle(const std::string word);     // Wordle with specific word (for testing)
+        Wordle()=delete;
+        Wordle(WordBank& words);    // Wordle with random word from word bank
+        Wordle(const std::string word);             // Wordle with specific word (for testing)
 
         bool isCorrectWord(const std::string& attempt);
         bool isGameOver();
@@ -17,7 +21,7 @@ class Wordle {
     
     private:
         const std::string answer;
-        std::vector<int> hint;
+        std::vector<int> _last_hint;
         const int maxAttempts;
         int attemptNum;
 };
