@@ -44,7 +44,7 @@ const std::string Solver::nextAttempt(){
     std::vector<std::string> potentialMatches;
 
     // Find potential matches using the currently known data (confirmed letters, confirmed positions and invalid letters)
-    for(auto word : words.all()) {
+    for(const auto word : words.all()) {
         if(wordIsPotentialMatch(std::move(word))){
             potentialMatches.push_back(word);
         }
