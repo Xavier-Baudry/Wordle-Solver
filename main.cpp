@@ -28,17 +28,12 @@ int main(int argc, char** argv){
     srand(time(NULL));
     
     auto words = std::make_shared<WordBank>(argv[1]);
-    
-    int succesfulGame = 0;
     auto solver = Solver(words);
 
     for(auto i = 0; i < gameCount; ++i){
-        auto game = Wordle(*words.get());
-
-        if(solver.solve(game)){
-            ++succesfulGame;
-        }
+        auto wordle = Wordle(*words.get());
+        solver.solve(wordle);
     }
 
-    std::cout << "Succesfully solved " << succesfulGame << " out of " << gameCount << " games. (Win Rate "; printf("%.2f", float(succesfulGame)/float(gameCount)*100); std::cout << "%)" << std::endl;
+    solver.stats();
 }

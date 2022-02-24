@@ -7,6 +7,8 @@
 #include "Util.h"
 
 bool Solver::solve(Wordle& wordle){
+    ++solveAttempts;
+
     reset();
 
     while(!wordle.isGameOver()){
@@ -27,7 +29,20 @@ bool Solver::solve(Wordle& wordle){
         attemptCount++;
     }
 
+    failedWords.push_back(wordle.getAnswer());
+
     return false;
+}
+
+void Solver::stats(){
+    auto failedAttempts = failedWords.size();
+    auto successfulGames = solveAttempts - failedAttempts;
+
+    std::cout   << "Attempted to solve " << solveAttempts << " wordles." << std::endl
+                << "Succesful attempts: " << successfulGames << std::endl
+                << "Win rate: "; printf("%.2f", float(successfulGames)/float(solveAttempts)*100); 
+    std::cout   << "%" << std::endl 
+                << "Failed words: " << iteratableToString(failedWords, ',') << std::endl;
 }
 
 const std::string Solver::nextAttempt(){

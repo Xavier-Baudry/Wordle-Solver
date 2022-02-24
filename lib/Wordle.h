@@ -18,9 +18,10 @@ class Wordle {
         bool isCorrectWord(const std::string& attempt);
         bool isGameOver();
         const std::vector<int>& getHint();
+        const std::string getAnswer();
     
     private:
-        const std::string answer;
+        const std::string _answer;
         std::vector<int> _last_hint;
         const int maxAttempts;
         int attemptNum;
