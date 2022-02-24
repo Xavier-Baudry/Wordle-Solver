@@ -19,7 +19,16 @@ bool Solver::solve(Wordle& wordle){
         saveHint(hint, attempt);
 
         #ifdef DEBUG
-            std::cout << "ATTEMPT #" << attemptCount << " - Trying word: " << attempt << " | hint: " << iteratableToString(hint) << " | currentMatches: " << currentMatches << " | mustHave: " << iteratableToString(mustHave, ',') << " | cannotHave: " << iteratableToString(cannotHave, ',')  << std::endl;
+            std::string cannotHaveString = "";
+            for(auto c = cannotHave.begin(); c != cannotHave.end(); c++){
+                if(c != cannotHave.begin()){
+                    cannotHaveString += ", ";
+                }
+                cannotHaveString += c->first;
+                cannotHaveString += "(" + iteratableToString(c->second, ',') + ")";
+            }
+
+            std::cout << "ATTEMPT #" << attemptCount << " - Trying word: " << attempt << " | hint: " << iteratableToString(hint) << " | currentMatches: " << currentMatches << " | mustHave: " << iteratableToString(mustHave, ',') << " | cannotHave: " << cannotHaveString << std::endl;
         #endif
 
         if(isSolved){
@@ -90,15 +99,20 @@ void Solver::saveHint(const std::vector<int>& hint, const std::string attempt) {
                 if(mustHave.count(attempt[i]) > 0){
                     mustHave.erase(attempt[i]);
                 }
+
                 break;
             case WRONG_POS:
                 if(mustHave.count(attempt[i]) == 0){
                     mustHave.insert(attempt[i]);
                 }
+
+                cannotHave[attempt[i]].push_back(i);
+
                 break;
             case INVALID:
-                if(cannotHave.count(attempt[i]) == 0){
-                    cannotHave.insert(attempt[i]);
+                // If the character is nowhere in the string, mark that it cannot be at any position
+                if(cannotHave[attempt[i]].size() != 5) {
+                    cannotHave[attempt[i]] = {0,1,2,3,4};
                 }
                 break;
         }
@@ -111,20 +125,24 @@ bool Solver::wordIsPotentialMatch(const std::string&& word){
     #endif
 
     for(auto i = 0; i < 5; ++i){
-        // Invalid position match
-        if(currentMatches[i] != '-' && word[i] != currentMatches[i]){
+        auto letter = word[i];
+        
+        // If we already know the letter at the position, check this first.
+        if(currentMatches[i] != '-' && letter != currentMatches[i]){
             #ifdef VERBOSE_DEBUG
                 std::cout << "invalid - position mismatch at " << i << std::endl;
             #endif
             return false;
         }
 
-        // Has invalid letter
-        if(cannotHave.count(word[i]) > 0){
-            #ifdef VERBOSE_DEBUG
-                std::cout << "invalid - contains " << word[i] << std::endl;
-            #endif
-            return false;
+        // Check if the letter has been flagged as not being allowed at the current position.
+        if(cannotHave.count(letter) > 0){
+            if(std::find(cannotHave[letter].begin(), cannotHave[letter].end(), i) != cannotHave[letter].end()){
+                #ifdef VERBOSE_DEBUG
+                    std::cout << "invalid - contains " << letter << "at position " << i << "." << std::endl;
+                #endif
+                return false;
+            }
         }
     }
 

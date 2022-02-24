@@ -2,6 +2,7 @@
 #define SOLVER_H
 
 #include <unordered_set>
+#include <unordered_map>
 #include <string>
 
 #include "Wordle.h"
@@ -26,7 +27,7 @@ class Solver {
         // Properties used for each solve attempt
         int attemptCount;
         std::string currentMatches;
-        std::unordered_set<char> cannotHave;
+        std::unordered_map<char, std::vector<int>> cannotHave;
         std::unordered_set<char> mustHave;
         
         // General Statistics
